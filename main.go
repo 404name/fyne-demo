@@ -79,9 +79,8 @@ func main() {
 	btn := widget.NewButton("关闭全部tab", func() {
 		global.Msg.SetText("你点击关闭全部tab")
 		global.Glog.Info(context.Background(), "你点击Connetct")
-		for _, item := range global.Tabs.Items {
-			global.Tabs.Remove(item)
-		}
+		global.Tabs.Items = nil
+		global.Tabs.Refresh()
 	})
 	top := container.NewVBox(tb,
 		btn,

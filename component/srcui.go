@@ -4,6 +4,7 @@ import (
 	"context"
 	"embed"
 	"io/fs"
+	"sort"
 	"strings"
 	"time"
 
@@ -14,6 +15,27 @@ import (
 	"github.com/404name/fyne-demo/page"
 	"github.com/leaanthony/debme"
 )
+
+type rootMenu []string
+
+func (m rootMenu) Len() int {
+	return len(m)
+}
+
+func (m rootMenu) Swap(i, j int) {
+	m[i], m[j] = m[j], m[i]
+}
+
+func (m rootMenu) Less(i, j int) bool {
+	childI, childJ := len(global.TreeData[m[i]]), len(global.TreeData[m[j]])
+	if childI == 0 && childJ == 0 {
+		return m[i] < m[j]
+	} else if childI != 0 && childJ != 0 {
+		return m[i] < m[j]
+	} else {
+		return childI > childJ
+	}
+}
 
 func Srcui(srcs embed.FS) {
 	// w := fyne.CurrentApp().NewWindow("sources")
@@ -56,7 +78,14 @@ func Srcui(srcs embed.FS) {
 		return nil
 	})
 	//content := widget.NewMultiLineEntry()
+	println(data[""])
+	if len(data[""]) >= 1 && data[""][0] == "." {
+		data[""] = data[""][1:] // 去除.
+	}
 	global.TreeData = data
+	sort.Sort(rootMenu(global.TreeData[""]))
+	println(global.TreeData[""])
+
 	global.Tree = widget.NewTreeWithStrings(global.TreeData)
 	global.Tree.Refresh()
 
